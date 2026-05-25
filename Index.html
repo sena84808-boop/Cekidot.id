@@ -9,9 +9,175 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+ 
+  <!-- Extra styles untuk Auth Modal & Pig Avatars -->
+  <style>
+    /* ── Auth Modal ── */
+    .auth-view { display: none; }
+    .auth-view.active { display: block; }
+ 
+    .auth-error {
+      display: none;
+      font-size: 12px;
+      color: var(--danger);
+      margin-top: 5px;
+    }
+    .auth-input.input-error {
+      border-color: var(--danger) !important;
+      box-shadow: 0 0 0 3px rgba(255,59,48,0.12) !important;
+    }
+ 
+    /* Password strength */
+    .strength-bar-wrap {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .strength-seg {
+      height: 3px;
+      flex: 1;
+      border-radius: 2px;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .strength-seg.weak   { background: var(--danger); }
+    .strength-seg.medium { background: var(--warning); }
+    .strength-seg.strong { background: var(--neon); }
+    #pass-strength-label {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+ 
+    /* Success banner in login */
+    .auth-success-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--neon-dim);
+      border: 1px solid rgba(0,230,118,0.3);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--neon);
+      margin-bottom: 20px;
+    }
+ 
+    /* Pig avatar in dashboard */
+    .pig-avatar-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--neon);
+      flex-shrink: 0;
+    }
+    .pig-avatar-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .pig-avatar-wrap.large {
+      width: 80px;
+      height: 80px;
+    }
+    .pig-avatar-wrap.xlarge {
+      width: 88px;
+      height: 88px;
+    }
+ 
+    /* Testi pig avatar */
+    .testi-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .testi-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+ 
+    /* Nav user button */
+    .nav-user-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px 4px 4px;
+      border-radius: 99px;
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .nav-user-btn:hover {
+      border-color: var(--neon);
+    }
+ 
+    /* Input icon inside form */
+    .input-icon-wrap {
+      position: relative;
+    }
+    .input-icon-wrap .form-input {
+      padding-left: 42px;
+    }
+    .input-icon-wrap .input-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: var(--text-3);
+      pointer-events: none;
+    }
+ 
+    /* Modal tabs (Register / Login) */
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-3);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all var(--transition-fast);
+    }
+    .auth-tab.active {
+      color: var(--neon);
+      border-bottom-color: var(--neon);
+    }
+    .auth-tab:hover:not(.active) {
+      color: var(--text-2);
+    }
+ 
+    /* auth modal link */
+    .auth-link {
+      color: var(--neon);
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+    .auth-link:hover { opacity: .8; }
+ 
+    .auth-switch-text {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-3);
+      margin-top: 16px;
+    }
+  </style>
 </head>
 <body>
-
+ 
 <!-- ══════════════ PAGE LOADER ══════════════ -->
 <div id="page-loader">
   <div class="loader-logo">Cekidot<span>Mart</span></div>
@@ -19,35 +185,29 @@
     <div class="loader-bar-fill"></div>
   </div>
 </div>
-
-
-
-
-
-
+ 
 <!-- ══════════════ NAVBAR ══════════════ -->
 <nav id="navbar">
   <div class="nav-inner">
     <a href="#" class="nav-logo">Cekidot<span>Mart</span></a>
-
+ 
     <div class="nav-links">
       <a href="#hero" class="nav-link active">Home</a>
       <a href="#categories" class="nav-link">Kategori</a>
       <a href="#sell" class="nav-link">Jual Barang</a>
       <a href="#faq" class="nav-link">Tentang</a>
     </div>
-
+ 
     <div class="nav-actions">
       <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
-      <button class="btn-ghost" onclick="openDashboard()">Login</button>
-      <button class="btn-primary" onclick="openDashboard()">Daftar Gratis →</button>
+      <!-- Auth buttons dirender oleh JS di sini -->
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
 </nav>
-
+ 
 <!-- Mobile Menu -->
 <div class="mobile-menu" id="mobile-menu">
   <a href="#hero" class="nav-link">🏠 Home</a>
@@ -55,68 +215,60 @@
   <a href="#sell" class="nav-link">💰 Jual Barang</a>
   <a href="#faq" class="nav-link">ℹ️ Tentang</a>
   <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px;">
-    <button class="btn-ghost" style="text-align:center;padding:14px;" onclick="openDashboard();document.getElementById('mobile-menu').classList.remove('open')">Login</button>
-    <button class="btn-primary" style="padding:14px;border-radius:12px;font-size:16px;" onclick="openDashboard()">Daftar Gratis →</button>
+    <button class="btn-ghost" style="text-align:center;padding:14px;" onclick="openAuthModal('login');document.getElementById('mobile-menu').classList.remove('open')">Login</button>
+    <button class="btn-primary" style="padding:14px;border-radius:12px;font-size:16px;" onclick="openAuthModal('register')">Daftar Gratis →</button>
   </div>
 </div>
-
+ 
 <!-- ══════════════ HERO ══════════════ -->
 <section id="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-
-  <!-- Floating Cards (desktop only) -->
-  <!-- ══════════════ FLOATING CARDS ══════════════ -->
-<div class="floating-cards">
-  <div class="float-card">
-    <img class="float-card-img" 
-         src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=88&h=88&fit=crop" 
-         alt="iPhone 15 Pro">
-    <div class="float-card-text">
-      <strong>iPhone 15 Pro</strong>
-      <span>Baru · Jakarta</span>
+ 
+  <div class="floating-cards">
+    <div class="float-card">
+      <img class="float-card-img" src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=88&h=88&fit=crop" alt="iPhone 15 Pro">
+      <div class="float-card-text">
+        <strong>iPhone 15 Pro</strong>
+        <span>Baru · Jakarta</span>
+      </div>
+      <div class="float-card-price">18.9 jt</div>
     </div>
-    <div class="float-card-price">18.9 jt</div>
-  </div>
-  <div class="float-card">
-    <img class="float-card-img" 
-         src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=88&h=88&fit=crop" 
-         alt="PS5 Bundle">
-    <div class="float-card-text">
-      <strong>PS5 Bundle</strong>
-      <span>Baru · Surabaya</span>
+    <div class="float-card">
+      <img class="float-card-img" src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=88&h=88&fit=crop" alt="PS5 Bundle">
+      <div class="float-card-text">
+        <strong>PS5 Bundle</strong>
+        <span>Baru · Surabaya</span>
+      </div>
+      <div class="float-card-price">8.5 jt</div>
     </div>
-    <div class="float-card-price">8.5 jt</div>
-  </div>
-  <div class="float-card">
-    <img class="float-card-img" 
-         src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=88&h=88&fit=crop" 
-         alt="Air Jordan 1">
-    <div class="float-card-text">
-      <strong>Air Jordan 1</strong>
-      <span>Baru · Bandung</span>
+    <div class="float-card">
+      <img class="float-card-img" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=88&h=88&fit=crop" alt="Air Jordan 1">
+      <div class="float-card-text">
+        <strong>Air Jordan 1</strong>
+        <span>Baru · Bandung</span>
+      </div>
+      <div class="float-card-price">3.2 jt</div>
     </div>
-    <div class="float-card-price">3.2 jt</div>
   </div>
-</div>
-
+ 
   <div class="hero-content">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
       🇮🇩 Marketplace #1 Indonesia · 500K+ Pengguna Aktif
     </div>
-
+ 
     <h1 class="hero-title">
       Tempat Jual Beli<br>
       <span class="highlight">Paling Gampang</span><br>
       dan Cepat.
     </h1>
-
+ 
     <p class="hero-sub">
       Jual barang lamamu dalam hitungan menit. Beli produk impianmu dengan harga terbaik.
       Gratis, aman, dan terpercaya.
     </p>
-
+ 
     <div class="hero-cta">
       <button class="btn-hero-primary" onclick="document.getElementById('sell').scrollIntoView({behavior:'smooth'})">
         🚀 Mulai Jual
@@ -125,14 +277,11 @@
         🔍 Cari Barang
       </button>
     </div>
-
-    <!-- Search -->
+ 
     <form class="hero-search" id="search-form">
       <div class="search-box">
         <input type="text" id="search-input" placeholder="Cari barang, kategori, atau penjual..." autocomplete="off">
-        <button type="submit" class="search-btn">
-          🔍 Cari
-        </button>
+        <button type="submit" class="search-btn">🔍 Cari</button>
       </div>
       <div class="search-tags">
         <span>Populer:</span>
@@ -144,8 +293,7 @@
       </div>
     </form>
   </div>
-
-  <!-- Stats -->
+ 
   <div class="hero-stats">
     <div class="stat-item">
       <div class="stat-num"><span class="neon" data-counter="500" data-suffix="K+">0</span></div>
@@ -168,7 +316,7 @@
     </div>
   </div>
 </section>
-
+ 
 <!-- ══════════════ CATEGORIES ══════════════ -->
 <section id="categories" class="section">
   <div class="section-inner">
@@ -180,12 +328,10 @@
       </div>
       <a href="#products-section" class="link-all">Lihat semua →</a>
     </div>
-    <div class="categories-grid" id="categories-grid">
-      <!-- Rendered by JS -->
-    </div>
+    <div class="categories-grid" id="categories-grid"></div>
   </div>
 </section>
-
+ 
 <!-- ══════════════ PRODUCTS ══════════════ -->
 <section id="products-section" class="section" style="background:var(--bg)">
   <div class="section-inner">
@@ -197,8 +343,7 @@
       </div>
       <a href="#" class="link-all">Lihat semua →</a>
     </div>
-
-    <!-- Filter Bar -->
+ 
     <div class="filter-bar">
       <span class="filter-label">Filter:</span>
       <div class="filter-chips">
@@ -216,11 +361,9 @@
         <option value="rating">Rating Tertinggi</option>
       </select>
     </div>
-
-    <div class="products-grid" id="products-grid">
-      <!-- Rendered by JS -->
-    </div>
-
+ 
+    <div class="products-grid" id="products-grid"></div>
+ 
     <div style="text-align:center;margin-top:48px;">
       <button class="btn-hero-secondary" onclick="showToast('🔄 Memuat lebih banyak produk...', 'success')" style="display:inline-flex;">
         Muat Lebih Banyak ↓
@@ -228,7 +371,7 @@
     </div>
   </div>
 </section>
-
+ 
 <!-- ══════════════ STATS BANNER ══════════════ -->
 <div class="stats-banner">
   <div>
@@ -248,19 +391,17 @@
     <div class="banner-stat-label">Kepuasan Pengguna</div>
   </div>
 </div>
-
+ 
 <!-- ══════════════ SELL SECTION ══════════════ -->
 <section id="sell" class="section">
   <div class="section-inner">
     <div class="sell-container">
-      <!-- Left Info -->
       <div class="sell-info reveal">
         <div class="section-label">Jual Barang</div>
         <h2 class="section-title">Mulai Jualan<br>Sekarang Juga</h2>
         <p class="section-sub" style="margin-top:12px;margin-bottom:0">
           Ratusan ribu pembeli siap membeli barangmu. Proses mudah, cepat, dan tanpa biaya listing.
         </p>
-
         <div class="sell-steps">
           <div class="sell-step reveal reveal-delay-1">
             <div class="step-num">1</div>
@@ -292,13 +433,10 @@
           </div>
         </div>
       </div>
-
-      <!-- Right Form -->
+ 
       <div class="sell-form reveal reveal-delay-2">
         <div class="form-title">📦 Post Barang Baru</div>
-
         <form id="sell-form">
-          <!-- Upload Zone -->
           <div class="form-group">
             <label class="form-label">Foto Produk <span>*</span></label>
             <div class="upload-zone" id="upload-zone">
@@ -309,17 +447,14 @@
             </div>
             <div class="upload-previews" id="upload-previews"></div>
           </div>
-
           <div class="form-group">
             <label class="form-label" for="product-name">Nama Barang <span>*</span></label>
             <input type="text" class="form-input" id="product-name" placeholder="cth. iPhone 14 Pro Max 256GB Purple" required>
           </div>
-
           <div class="form-group">
             <label class="form-label">Deskripsi</label>
             <textarea class="form-textarea" placeholder="Deskripsikan kondisi, kelengkapan, alasan jual, dll."></textarea>
           </div>
-
           <div class="form-row">
             <div class="form-group" style="margin-bottom:0">
               <label class="form-label" for="price-input">Harga (Rp) <span>*</span></label>
@@ -337,7 +472,6 @@
               </select>
             </div>
           </div>
-
           <div class="form-row" style="margin-top:20px">
             <div class="form-group" style="margin-bottom:0">
               <label class="form-label">Kategori</label>
@@ -355,7 +489,6 @@
               <input type="text" class="form-input" placeholder="cth. Jakarta Selatan">
             </div>
           </div>
-
           <div style="margin-top:24px">
             <button type="submit" class="btn-submit">🚀 Posting Sekarang</button>
           </div>
@@ -364,7 +497,7 @@
     </div>
   </div>
 </section>
-
+ 
 <!-- ══════════════ TESTIMONIALS ══════════════ -->
 <section id="testimonials" class="section">
   <div class="section-inner">
@@ -375,12 +508,10 @@
         <p class="section-sub">Dipercaya ratusan ribu pengguna di seluruh Indonesia.</p>
       </div>
     </div>
-    <div class="testi-grid" id="testi-grid">
-      <!-- Rendered by JS -->
-    </div>
+    <div class="testi-grid" id="testi-grid"></div>
   </div>
 </section>
-
+ 
 <!-- ══════════════ FAQ ══════════════ -->
 <section id="faq" class="section">
   <div class="section-inner">
@@ -389,12 +520,10 @@
       <h2 class="section-title">Pertanyaan Umum</h2>
       <p class="section-sub">Semua yang perlu kamu tahu tentang Cekidot Mart.</p>
     </div>
-    <div class="faq-container" id="faq-container">
-      <!-- Rendered by JS -->
-    </div>
+    <div class="faq-container" id="faq-container"></div>
   </div>
 </section>
-
+ 
 <!-- ══════════════ CTA SECTION ══════════════ -->
 <section style="padding:80px 40px;background:var(--bg-secondary)">
   <div style="max-width:700px;margin:0 auto;text-align:center">
@@ -407,13 +536,13 @@
       <button class="btn-hero-primary" onclick="document.getElementById('sell').scrollIntoView({behavior:'smooth'})">
         🚀 Mulai Jual Gratis
       </button>
-      <button class="btn-hero-secondary" onclick="openDashboard()">
+      <button class="btn-hero-secondary" onclick="openAuthModal('register')">
         👤 Buat Akun
       </button>
     </div>
   </div>
 </section>
-
+ 
 <!-- ══════════════ FOOTER ══════════════ -->
 <footer>
   <div class="footer-inner">
@@ -430,7 +559,6 @@
           <a href="#" class="social-btn" title="YouTube">▶️</a>
         </div>
       </div>
-
       <div class="footer-col">
         <h4>Marketplace</h4>
         <ul>
@@ -441,7 +569,6 @@
           <li><a href="#">Program Afiliasi</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4>Kategori</h4>
         <ul>
@@ -452,7 +579,6 @@
           <li><a href="#">Furniture</a></li>
         </ul>
       </div>
-
       <div class="footer-col">
         <h4>Bantuan</h4>
         <ul>
@@ -464,7 +590,6 @@
         </ul>
       </div>
     </div>
-
     <div class="footer-bottom">
       <p>© 2025 Cekidot Mart. Dibuat dengan ❤️ di Indonesia.</p>
       <div class="footer-links">
@@ -475,179 +600,316 @@
     </div>
   </div>
 </footer>
-
+ 
+<!-- ══════════════ AUTH MODAL (Register + Login) ══════════════ -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span id="auth-modal-title">👤 Buat Akun</span>
+      </div>
+      <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    </div>
+ 
+    <!-- Tab switcher -->
+    <div class="auth-tabs" style="margin:0 32px;border-bottom:1px solid var(--border)">
+      <div class="auth-tab active" id="tab-register" onclick="showAuthView('register');document.getElementById('tab-register').classList.add('active');document.getElementById('tab-login').classList.remove('active');document.getElementById('auth-success-banner').style.display='none'">
+        Daftar
+      </div>
+      <div class="auth-tab" id="tab-login" onclick="showAuthView('login');document.getElementById('tab-login').classList.add('active');document.getElementById('tab-register').classList.remove('active')">
+        Masuk
+      </div>
+    </div>
+ 
+    <div class="modal-body" style="display:block;overflow-y:auto;max-height:calc(90vh - 140px)">
+      <div style="padding:24px 32px 32px">
+ 
+        <!-- ── REGISTER VIEW ── -->
+        <div class="auth-view active" id="auth-view-register">
+          <p style="font-size:13px;color:var(--text-3);margin-bottom:20px">Gratis selamanya · Daftar dalam 1 menit 🐷</p>
+ 
+          <div class="form-row" style="margin-bottom:16px">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Nama Depan <span style="color:var(--neon)">*</span></label>
+              <input type="text" class="form-input auth-input" id="auth-fname" placeholder="John">
+              <div class="auth-error" id="auth-err-fname"></div>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Nama Belakang</label>
+              <input type="text" class="form-input auth-input" id="auth-lname" placeholder="Doe">
+            </div>
+          </div>
+ 
+          <div class="form-group">
+            <label class="form-label">Email <span style="color:var(--neon)">*</span></label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">✉️</span>
+              <input type="email" class="form-input auth-input" id="auth-reg-email" placeholder="kamu@email.com">
+            </div>
+            <div class="auth-error" id="auth-err-reg-email"></div>
+          </div>
+ 
+          <div class="form-group">
+            <label class="form-label">No. HP / WhatsApp</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">📱</span>
+              <input type="tel" class="form-input auth-input" id="auth-phone" placeholder="0812-xxxx-xxxx">
+            </div>
+          </div>
+ 
+          <div class="form-group">
+            <label class="form-label">Password <span style="color:var(--neon)">*</span></label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" class="form-input auth-input" id="auth-reg-pass" placeholder="Min. 8 karakter" oninput="checkPasswordStrength(this.value)">
+            </div>
+            <div class="strength-bar-wrap" id="pass-strength-bar">
+              <div class="strength-seg"></div>
+              <div class="strength-seg"></div>
+              <div class="strength-seg"></div>
+              <div class="strength-seg"></div>
+            </div>
+            <div id="pass-strength-label"></div>
+            <div class="auth-error" id="auth-err-reg-pass"></div>
+          </div>
+ 
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Kota</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">📍</span>
+              <input type="text" class="form-input auth-input" id="auth-city" placeholder="cth. Jakarta Selatan">
+            </div>
+          </div>
+ 
+          <button class="btn-submit" id="btn-register" onclick="doRegister()" style="margin-top:24px">
+            🚀 Daftar Gratis
+          </button>
+          <p class="auth-switch-text">Sudah punya akun? <span class="auth-link" onclick="showAuthView('login');document.getElementById('tab-login').classList.add('active');document.getElementById('tab-register').classList.remove('active')">Masuk di sini</span></p>
+        </div>
+ 
+        <!-- ── LOGIN VIEW ── -->
+        <div class="auth-view" id="auth-view-login">
+          <!-- Success banner after register -->
+          <div class="auth-success-banner" id="auth-success-banner"></div>
+ 
+          <!-- Pig profile preview -->
+          <div style="text-align:center;margin-bottom:24px">
+            <div class="pig-avatar-wrap xlarge" style="margin:0 auto">
+              <img id="login-pig-img" src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=pig&backgroundColor=ffd5dc&eyes=wink&mouth=smileTeeth" alt="Profil Babi">
+            </div>
+            <div id="login-pig-name" style="font-family:var(--font-display);font-size:18px;font-weight:700;margin-top:12px;letter-spacing:-.5px">Selamat Datang! 🐷</div>
+            <div id="login-pig-email" style="font-size:13px;color:var(--text-3);margin-top:2px">Masuk ke akunmu</div>
+          </div>
+ 
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">✉️</span>
+              <input type="email" class="form-input auth-input" id="auth-login-email" placeholder="kamu@email.com">
+            </div>
+            <div class="auth-error" id="auth-err-login-email"></div>
+          </div>
+ 
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <div class="input-icon-wrap">
+              <span class="input-icon">🔒</span>
+              <input type="password" class="form-input auth-input" id="auth-login-pass" placeholder="Masukkan password">
+            </div>
+            <div class="auth-error" id="auth-err-login-pass"></div>
+          </div>
+ 
+          <div style="text-align:right;margin-top:-8px;margin-bottom:16px">
+            <span class="auth-link" style="font-size:12px">Lupa password?</span>
+          </div>
+ 
+          <button class="btn-submit" id="btn-login" onclick="doLogin()">
+            🔑 Masuk Sekarang
+          </button>
+          <p class="auth-switch-text">Belum punya akun? <span class="auth-link" onclick="showAuthView('register');document.getElementById('tab-register').classList.add('active');document.getElementById('tab-login').classList.remove('active')">Daftar gratis</span></p>
+        </div>
+ 
+      </div>
+    </div>
+  </div>
+</div>
+ 
 <!-- ══════════════ DASHBOARD MODAL ══════════════ -->
 <div class="modal-overlay" id="dashboard-modal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">👤 Dashboard</div>
+      <div class="modal-title">🐷 Dashboard</div>
       <button class="modal-close" onclick="closeDashboard()">✕</button>
     </div>
     <div class="modal-body">
       <!-- Sidebar -->
       <div class="dashboard-sidebar">
-        <div class="dash-link active" data-panel="overview" onclick="switchDashPanel('overview')">
-          📊 Overview
-        </div>
-        <div class="dash-link" data-panel="listings" onclick="switchDashPanel('listings')">
-          📦 Barang Dijual
-        </div>
-        <div class="dash-link" data-panel="wishlist" onclick="switchDashPanel('wishlist')">
-          ❤️ Wishlist
-        </div>
-        <div class="dash-link" data-panel="history" onclick="switchDashPanel('history')">
-          🧾 Riwayat
-        </div>
-        <div class="dash-link" data-panel="profile" onclick="switchDashPanel('profile')">
-          ✏️ Edit Profil
-        </div>
+        <div class="dash-link active" data-panel="overview" onclick="switchDashPanel('overview')">📊 Overview</div>
+        <div class="dash-link" data-panel="listings"  onclick="switchDashPanel('listings')">📦 Barang Dijual</div>
+        <div class="dash-link" data-panel="wishlist"  onclick="switchDashPanel('wishlist')">❤️ Wishlist</div>
+        <div class="dash-link" data-panel="history"   onclick="switchDashPanel('history')">🧾 Riwayat</div>
+        <div class="dash-link" data-panel="profile"   onclick="switchDashPanel('profile')">✏️ Edit Profil</div>
+        <div class="dash-link" style="margin-top:auto;color:var(--danger)" onclick="doLogout()">🚪 Keluar</div>
       </div>
-
+ 
       <!-- Content -->
       <div class="dashboard-content">
+ 
         <!-- Overview -->
         <div class="dash-panel active" id="dash-overview">
           <div class="dash-profile-header">
-            <div class="dash-avatar">RD</div>
+            <!-- Pig avatar -->
+            <div class="pig-avatar-wrap" style="width:72px;height:72px">
+              <img class="dash-pig-avatar" src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=pig&backgroundColor=ffd5dc&eyes=wink&mouth=smileTeeth" alt="Foto Profil">
+            </div>
             <div class="dash-profile-info">
-              <h3>Rizky Darmawan</h3>
-              <p>rizky.darmawan@email.com · Bergabung 2024</p>
+              <h3 id="dash-user-name">Pengguna</h3>
+              <p id="dash-user-email">email@email.com</p>
+              <p id="dash-user-join" style="font-size:11px;color:var(--text-3);margin-top:2px"></p>
               <div style="display:flex;align-items:center;gap:6px;margin-top:6px">
                 <span style="color:#f5a623;font-size:14px">★★★★★</span>
-                <span style="font-size:13px;color:var(--text-3)">4.9 · 24 ulasan penjual</span>
+                <span style="font-size:13px;color:var(--text-3)">4.9 · Penjual Baru</span>
               </div>
             </div>
           </div>
           <div class="dash-stats">
             <div class="dash-stat">
-              <div class="dash-stat-num">12</div>
-              <div class="dash-stat-label">Barang Dijual</div>
+              <div class="dash-stat-num">0</div>
+              <div class="dash-stat-label">Dijual</div>
             </div>
             <div class="dash-stat">
-              <div class="dash-stat-num">8</div>
+              <div class="dash-stat-num">0</div>
               <div class="dash-stat-label">Terjual</div>
             </div>
             <div class="dash-stat">
-              <div class="dash-stat-num">24</div>
+              <div class="dash-stat-num">0</div>
               <div class="dash-stat-label">Wishlist</div>
             </div>
           </div>
           <div style="background:var(--neon-dim);border:1px solid rgba(0,230,118,0.3);border-radius:var(--radius);padding:16px;margin-top:4px">
             <div style="font-size:13px;font-weight:700;color:var(--neon);margin-bottom:4px">💰 Total Pendapatan Bulan Ini</div>
-            <div style="font-family:var(--font-display);font-size:28px;font-weight:700;letter-spacing:-1px">Rp 12.400.000</div>
-            <div style="font-size:12px;color:var(--text-3);margin-top:4px">+24% dari bulan lalu</div>
+            <div style="font-family:var(--font-display);font-size:28px;font-weight:700;letter-spacing:-1px">Rp 0</div>
+            <div style="font-size:12px;color:var(--text-3);margin-top:4px">Mulai jual barang pertamamu!</div>
           </div>
         </div>
-
+ 
         <!-- Listings -->
         <div class="dash-panel" id="dash-listings">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
             <h3 style="font-family:var(--font-heading);font-size:18px;font-weight:800">Barang Dijual</h3>
             <button class="btn-primary" style="font-size:13px;padding:8px 16px" onclick="closeDashboard();document.getElementById('sell').scrollIntoView({behavior:'smooth'})">+ Post Baru</button>
           </div>
-          <div class="listing-item">
-            <div class="listing-thumb"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=56&h=56&fit=crop" alt="MacBook"></div>
-            <div class="listing-info">
-              <div class="listing-name">MacBook Pro M3 14"</div>
-              <div class="listing-price">Rp 24.500.000</div>
-            </div>
-            <span class="listing-status status-active">Aktif</span>
-          </div>
-          <div class="listing-item">
-            <div class="listing-thumb"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=56&h=56&fit=crop" alt="Nike"></div>
-            <div class="listing-info">
-              <div class="listing-name">Nike Air Jordan 1</div>
-              <div class="listing-price">Rp 3.200.000</div>
-            </div>
-            <span class="listing-status status-active">Aktif</span>
-          </div>
-          <div class="listing-item">
-            <div class="listing-thumb" style="background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:24px">📦</div>
-            <div class="listing-info">
-              <div class="listing-name">Samsung Galaxy S23</div>
-              <div class="listing-price">Rp 9.200.000</div>
-            </div>
-            <span class="listing-status status-sold">Terjual</span>
+          <div style="text-align:center;padding:40px 20px;color:var(--text-3)">
+            <div style="font-size:40px;margin-bottom:12px">📦</div>
+            <div style="font-size:15px;font-weight:600;margin-bottom:6px">Belum ada barang</div>
+            <div style="font-size:13px">Mulai posting barang pertamamu!</div>
           </div>
         </div>
-
+ 
         <!-- Wishlist -->
         <div class="dash-panel" id="dash-wishlist">
           <h3 style="font-family:var(--font-heading);font-size:18px;font-weight:800;margin-bottom:20px">❤️ Wishlist Kamu</h3>
-          <div id="dash-wishlist-items">
-            <div class="listing-item">
-              <div class="listing-thumb"><img src="https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=56&h=56&fit=crop" alt="PS5"></div>
-              <div class="listing-info">
-                <div class="listing-name">PlayStation 5 Digital</div>
-                <div class="listing-price">Rp 8.500.000</div>
-              </div>
-              <button class="btn-chat">💬 Chat</button>
-            </div>
-            <div class="listing-item">
-              <div class="listing-thumb"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=56&h=56&fit=crop" alt="Motor"></div>
-              <div class="listing-info">
-                <div class="listing-name">Honda Vario 160</div>
-                <div class="listing-price">Rp 22.000.000</div>
-              </div>
-              <button class="btn-chat">💬 Chat</button>
-            </div>
+          <div style="text-align:center;padding:40px 20px;color:var(--text-3)">
+            <div style="font-size:40px;margin-bottom:12px">🤍</div>
+            <div style="font-size:15px;font-weight:600;margin-bottom:6px">Wishlist masih kosong</div>
+            <div style="font-size:13px">Tap ikon hati pada produk untuk menyimpannya</div>
           </div>
         </div>
-
+ 
         <!-- History -->
         <div class="dash-panel" id="dash-history">
           <h3 style="font-family:var(--font-heading);font-size:18px;font-weight:800;margin-bottom:20px">🧾 Riwayat Transaksi</h3>
-          <div class="listing-item">
-            <div class="listing-thumb" style="background:var(--neon-dim);display:flex;align-items:center;justify-content:center;font-size:22px">✅</div>
-            <div class="listing-info">
-              <div class="listing-name">Mechanical Keyboard Keychron K8</div>
-              <div class="listing-price" style="color:var(--neon)">Rp 1.850.000 · Dibeli</div>
-            </div>
-            <span style="font-size:11px;color:var(--text-3)">2 hari lalu</span>
-          </div>
-          <div class="listing-item">
-            <div class="listing-thumb" style="background:rgba(255,59,48,0.1);display:flex;align-items:center;justify-content:center;font-size:22px">💰</div>
-            <div class="listing-info">
-              <div class="listing-name">Samsung Galaxy S23 Ultra</div>
-              <div class="listing-price" style="color:var(--danger)">Rp 9.200.000 · Dijual</div>
-            </div>
-            <span style="font-size:11px;color:var(--text-3)">1 minggu lalu</span>
+          <div style="text-align:center;padding:40px 20px;color:var(--text-3)">
+            <div style="font-size:40px;margin-bottom:12px">🧾</div>
+            <div style="font-size:15px;font-weight:600;margin-bottom:6px">Belum ada transaksi</div>
+            <div style="font-size:13px">Riwayat jual beli kamu akan tampil di sini</div>
           </div>
         </div>
-
-        <!-- Profile Edit -->
+ 
+        <!-- Edit Profile -->
         <div class="dash-panel" id="dash-profile">
-          <h3 style="font-family:var(--font-heading);font-size:18px;font-weight:800;margin-bottom:24px">✏️ Edit Profil</h3>
+          <h3 style="font-family:var(--font-heading);font-size:18px;font-weight:800;margin-bottom:8px">✏️ Edit Profil</h3>
+ 
+          <!-- Big pig avatar in edit profile -->
+          <div style="display:flex;align-items:center;gap:16px;padding:20px;background:var(--surface-2);border-radius:var(--radius);margin-bottom:24px">
+            <div class="pig-avatar-wrap large">
+              <img class="dash-pig-avatar" src="https://api.dicebear.com/9.x/fun-emoji/svg?seed=pig&backgroundColor=ffd5dc&eyes=wink&mouth=smileTeeth" alt="Foto Profil">
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:700" id="edit-display-name">Nama Pengguna</div>
+              <div style="font-size:12px;color:var(--text-3);margin-top:2px">Foto profil babi otomatis 🐷</div>
+              <div style="font-size:11px;color:var(--text-3);margin-top:4px">Setiap akun punya babi uniknya sendiri!</div>
+            </div>
+          </div>
+ 
           <div style="display:flex;flex-direction:column;gap:16px">
-            <div class="form-group" style="margin-bottom:0">
-              <label class="form-label">Nama Lengkap</label>
-              <input type="text" class="form-input" value="Rizky Darmawan">
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Nama Depan</label>
+                <input type="text" class="form-input" id="edit-fname">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Nama Belakang</label>
+                <input type="text" class="form-input" id="edit-lname">
+              </div>
             </div>
             <div class="form-group" style="margin-bottom:0">
               <label class="form-label">Email</label>
-              <input type="email" class="form-input" value="rizky.darmawan@email.com">
+              <input type="email" class="form-input" id="edit-email">
             </div>
             <div class="form-group" style="margin-bottom:0">
               <label class="form-label">No. HP / WhatsApp</label>
-              <input type="tel" class="form-input" value="0812-xxxx-xxxx">
+              <input type="tel" class="form-input" id="edit-phone">
             </div>
             <div class="form-group" style="margin-bottom:0">
               <label class="form-label">Lokasi</label>
-              <input type="text" class="form-input" value="Jakarta Selatan">
+              <input type="text" class="form-input" id="edit-city">
             </div>
-            <button class="btn-primary" style="padding:12px;border-radius:10px;font-size:14px;font-weight:700" onclick="showToast('✅ Profil berhasil diperbarui!', 'success')">
+            <button class="btn-primary" style="padding:12px;border-radius:10px;font-size:14px;font-weight:700" onclick="saveProfile()">
               💾 Simpan Perubahan
             </button>
           </div>
         </div>
+ 
       </div>
     </div>
   </div>
 </div>
-
+ 
 <!-- ══════════════ TOAST CONTAINER ══════════════ -->
 <div class="toast-container" id="toast-container"></div>
-
+ 
 <script src="main.js"></script>
+<script>
+  // Tab sync dengan showAuthView
+  const _origShowAuthView = window.showAuthView;
+  window.showAuthView = function(view) {
+    _origShowAuthView(view);
+    // Sync tabs
+    document.getElementById('tab-register')?.classList.toggle('active', view === 'register');
+    document.getElementById('tab-login')?.classList.toggle('active', view === 'login');
+  };
+ 
+  // Save profile dari dashboard
+  window.saveProfile = function() {
+    if (!auth.current) return;
+    const fname = document.getElementById('edit-fname')?.value.trim() || auth.current.fname;
+    const lname = document.getElementById('edit-lname')?.value.trim() || auth.current.lname;
+    const email = document.getElementById('edit-email')?.value.trim() || auth.current.email;
+    const phone = document.getElementById('edit-phone')?.value.trim() || auth.current.phone;
+    const city  = document.getElementById('edit-city')?.value.trim()  || auth.current.city;
+ 
+    // Update in users array
+    const idx = auth.users.findIndex(u => u.email === auth.current.email);
+    if (idx !== -1) {
+      auth.users[idx] = { ...auth.users[idx], fname, lname, email, phone, city };
+      auth.save();
+      auth.login(auth.users[idx]);
+    }
+    updateNavAuth();
+    updateDashboard();
+    showToast('✅ Profil berhasil diperbarui!', 'success');
+  };
+</script>
 </body>
 </html>
