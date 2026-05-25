@@ -52,16 +52,7 @@ function pigAvatar(seed = 'pig', size = 56) {
 }
  
 // ── Product Data ──────────────────────────────
-const PRODUCTS = [
-  { id:1, name:'MacBook Pro M3 14" Space Black', price:24500000, seller:'TechStore ID', rating:4.9, reviews:128, condition:'Baru', category:'elektronik', location:'Jakarta Selatan', img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop', badge:'hot' },
-  { id:2, name:'iPhone 15 Pro Max 256GB Natural Titanium', price:18900000, seller:'Apple Center', rating:4.8, reviews:94, condition:'Baru', category:'elektronik', location:'Bandung', img:'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&h=300&fit=crop', badge:'new' },
-  { id:3, name:'Nike Air Jordan 1 Retro High OG', price:3200000, seller:'SneakerHeadJKT', rating:4.7, reviews:56, condition:'Baru', category:'fashion', location:'Jakarta Pusat', img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop', badge:'new' },
-  { id:4, name:'PlayStation 5 Digital Edition Bundle', price:8500000, seller:'GamingZone99', rating:4.6, reviews:73, condition:'Baru', category:'gaming', location:'Surabaya', img:'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&h=300&fit=crop', badge:'hot' },
-  { id:5, name:'Honda Vario 160 2023 Low KM', price:22000000, seller:'AutoDealer Prima', rating:4.5, reviews:31, condition:'Bekas', category:'kendaraan', location:'Bekasi', img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop', badge:'used' },
-  { id:6, name:'Kursi Gaming RESPAWN 900 Full Recline', price:2800000, seller:'FurnitureMall', rating:4.4, reviews:44, condition:'Baru', category:'furniture', location:'Depok', img:'https://images.unsplash.com/photo-1616627985067-55ea1b5cf016?w=400&h=300&fit=crop', badge:'new' },
-  { id:7, name:'Samsung Galaxy Tab S9 Ultra 12GB', price:16500000, seller:'GadgetPlus', rating:4.7, reviews:62, condition:'Baru', category:'elektronik', location:'Tangerang', img:'https://images.unsplash.com/photo-1590739000027-286c2688ee57?w=400&h=300&fit=crop', badge:'new' },
-  { id:8, name:'Mechanical Keyboard Keychron K8 Pro', price:1850000, seller:'TechGear_ID', rating:4.8, reviews:89, condition:'Baru', category:'elektronik', location:'Jakarta Barat', img:'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&h=300&fit=crop', badge:'' },
-];
+
  
 const CATEGORIES = [
   { id:'elektronik', name:'Elektronik', icon:'📱', count:2847 },
